@@ -12,6 +12,7 @@ import (
 var BASE_URL = "http://10.118.45.220//bigbluebutton/api/"
 var SALT = "836fcbf304c917f91175c3b34f8c3347"
 
+// we need participants
 func GetJoinURL(participants *(dataStructs.Participants)) string {
 	if "" == participants.FullName_ || "" == participants.MeetingID_ ||
 		"" == participants.Password_ {
@@ -61,9 +62,9 @@ func GetJoinURL(participants *(dataStructs.Participants)) string {
 }
 
 //only returns true when someone has joined the meeting
-func IsMeetingRunning(meetingroom *dataStructs.MeetingRoom) bool {
-	checksum := helpers.GetChecksum("isMeetingRunning" + "meetingID=" + meetingroom.MeetingID_ + SALT)
-	getURL := BASE_URL + "isMeetingRunning?" + "meetingID=" + meetingroom.MeetingID_ + "&checksum=" + checksum
+func IsMeetingRunning(meetingID string) bool {
+	checksum := helpers.GetChecksum("isMeetingRunning" + "meetingID=" + meetingID + SALT)
+	getURL := BASE_URL + "isMeetingRunning?" + "meetingID=" + meetingID+ "&checksum=" + checksum
 //	log.Println("the url we are GETting to check meeting running is: ", getURL)
 	response := helpers.HttpGet(getURL)
 	//log.Println(response)
@@ -84,15 +85,12 @@ func IsMeetingRunning(meetingroom *dataStructs.MeetingRoom) bool {
 	return XMLResp.Running
 }
 
-func EndMeeting(meetingRoom *dataStructs.MeetingRoom) string {
+func EndMeeting(meeting_ID string, mod_PW string) string {
 	log.Println("*** ending meeting ***")
-	if meetingRoom.MeetingID_ == "" || meetingRoom.ModeratorPW_ == "" {
-		log.Println("Error: PARAM ERROR.")
-		return "Error: PARAM ERROR."
-	}
 
-	meetingID := "meetingID=" + url.QueryEscape(meetingRoom.MeetingID_)
-	modPW := "&password=" + url.QueryEscape(meetingRoom.ModeratorPW_)
+
+	meetingID := "meetingID=" + url.QueryEscape(meeting_ID)
+	modPW := "&password=" + url.QueryEscape(mod_PW)
 	param := meetingID + modPW
 	checksum := helpers.GetChecksum("end" + param + SALT)
 
@@ -103,33 +101,30 @@ func EndMeeting(meetingRoom *dataStructs.MeetingRoom) string {
 	//	log.Println(response)
 	if "ERROR" == response {
 		log.Println("ERROR: HTTP ERROR.")
-		return "Could not end meeting " + meetingRoom.MeetingID_
+		return "Could not end meeting " + meeting_ID
 	}
 	var XMLResp dataStructs.EndResponse
 
 	err := helpers.ReadXML(response, &XMLResp)
 	if nil != err {
-		return "Could not end meeting " + meetingRoom.MeetingID_
+		return "Could not end meeting " + meeting_ID
 	}
 	//log.Println("*** ", XMLResp, " ***")
 
 	if "SUCCESS" == XMLResp.ReturnCode {
 
-		return "Successfully ended meeting " + meetingRoom.MeetingID_
+		return "Successfully ended meeting " + meeting_ID
 	} else {
-		return "Could not end meeting " + meetingRoom.MeetingID_
+		return "Could not end meeting " + meeting_ID
 	}
 
 }
-
-func GetMeetingInfo(meetingRoom *dataStructs.MeetingRoom) string {
+//TODO: only needs meeting id and mod pw, and repsonse struct
+func GetMeetingInfo(meeting_ID string, mod_PW string, responseXML *dataStructs.GetMeetingInfoResponse) string {
 	log.Println("*** Getting meeting info ***")
-	if meetingRoom.MeetingID_ == "" || meetingRoom.ModeratorPW_ == "" {
-		log.Println("Error: PARAM ERROR.")
-		return "Error: PARAM ERROR."
-	}
-	meetingID := "meetingID=" + url.QueryEscape(meetingRoom.MeetingID_)
-	modPW := "&password=" + url.QueryEscape(meetingRoom.ModeratorPW_)
+
+	meetingID := "meetingID=" + url.QueryEscape(meeting_ID)
+	modPW := "&password=" + url.QueryEscape(mod_PW)
 	param := meetingID + modPW
 	checksum := helpers.GetChecksum("getMeetingInfo" + param + SALT)
 
@@ -140,24 +135,26 @@ func GetMeetingInfo(meetingRoom *dataStructs.MeetingRoom) string {
 	//	log.Println(response)
 	if "ERROR" == response {
 		log.Println("ERROR: HTTP ERROR.")
-		return "Could not get meeting info " + meetingRoom.MeetingID_
+		return "Could not get meeting info " + meeting_ID
 	}
 
-	err := helpers.ReadXML(response, &meetingRoom.MeetingInfo)
+	err := helpers.ReadXML(response, responseXML)
 	if nil != err {
-		return "Could not get meeting info " + meetingRoom.MeetingID_
+		return "Could not get meeting info " + meeting_ID
 	}
 	//log.Println("*** ", XMLResp, " ***")
 
-	if "SUCCESS" == meetingRoom.MeetingInfo.ReturnCode {
+	if "SUCCESS" == responseXML.ReturnCode {
 		println("Successfully got meeting info")
-		return "Successfully got meeting info" + meetingRoom.MeetingID_
+		return "Successfully got meeting info" + meeting_ID
 	} else {
 		println("Could not get meeting info ")
-		return "Could not get meeting info " + meetingRoom.MeetingID_
+		return "Could not get meeting info " + meeting_ID
 	}
 
 }
+
+// TODO: doesn't need anything
 func GetMeetings() dataStructs.GetMeetingsResponse{
 	checksum := helpers.GetChecksum("getMeetings" + SALT)
 
@@ -214,6 +211,7 @@ func GetRecordings() dataStructs.GetRecordingsResponse{
 	return XMLResp
 }
 
+//TODO: needs things
 func CreateMeeting(meetingRoom *dataStructs.MeetingRoom) string {
 	if meetingRoom.Name_ == "" || meetingRoom.MeetingID_ == "" ||
 		meetingRoom.AttendeePW_ == "" || meetingRoom.ModeratorPW_ == "" {

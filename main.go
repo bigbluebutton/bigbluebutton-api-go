@@ -27,7 +27,7 @@ func main() {
 	fmt.Println()
 	fmt.Println(api.GetJoinURL(&participant))
 	fmt.Println()
-	if api.IsMeetingRunning(&meetingRoom) {
+	if api.IsMeetingRunning(meetingRoom.MeetingID_) {
 		log.Println("meeting is running")
 	} else {
 		log.Println("meeting is not running")
@@ -39,7 +39,7 @@ func main() {
 	// api.CreateMeeting(&meetingRoom)
 	// fmt.Println()
 	//time.Sleep(30 * time.Second)
-	api.GetMeetingInfo(&meetingRoom)
+	api.GetMeetingInfo(meetingRoom.MeetingID_,meetingRoom.ModeratorPW_, &meetingRoom.MeetingInfo)
 	fmt.Println()
 
 
