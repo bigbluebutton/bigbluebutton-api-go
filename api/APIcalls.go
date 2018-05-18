@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-var BASE_URL = "http://10.118.45.220//bigbluebutton/api/"
+var BASE_URL = "http://10.118.45.220/bigbluebutton/api/"
 var SALT = "836fcbf304c917f91175c3b34f8c3347"
 
 // we need participants

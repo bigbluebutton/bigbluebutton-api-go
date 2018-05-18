@@ -43,8 +43,17 @@ type MeetingRoom struct {
 	ModeratorOnlyMessage    string
 	AutoStartRecording      bool
 	AllowStartStopRecording bool
+  Created                 bool
 
 	CreateMeetingResponse CreateMeetingResponse
 	MeetingInfo           GetMeetingInfoResponse
 
+}
+
+type WebHook struct {
+  HookID      string
+  CallBackURL string
+  MeetingId   string
+
+  WebhookResponse CreateWebhookResponse
 }

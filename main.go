@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+
 	"github.com/bigbluebutton-api-go/api"
 	"github.com/bigbluebutton-api-go/dataStructs"
+	"github.com/bigbluebutton-api-go/webhook"
+
 )
 
 func main() {
@@ -39,12 +42,21 @@ func main() {
 	// api.CreateMeeting(&meetingRoom)
 	// fmt.Println()
 	//time.Sleep(30 * time.Second)
-	api.GetMeetingInfo(meetingRoom.MeetingID_,meetingRoom.ModeratorPW_, &meetingRoom.MeetingInfo)
+	api.GetMeetingInfo(meetingRoom.MeetingID_, meetingRoom.ModeratorPW_, &meetingRoom.MeetingInfo)
 	fmt.Println()
 
+	var wh = dataStructs.WebHook{}
+	wh.CallBackURL = "http://postcatcher.in/catchers/5aff22a294c447040000000d"
+	wh.MeetingId =   meetingRoom.MeetingID_
 
+	fmt.Println("Creating webhook")
+	fmt.Println(webhook.CreateHook(&wh))
 
-	var temp =api.GetRecordings()
+	fmt.Println(webhook.DestroyHook("1"))
+	fmt.Println(webhook.DestroyHook("2"))
+	fmt.Println(webhook.DestroyHook("3"))
+
+	var temp = api.GetRecordings()
 	fmt.Println(temp)
 	//fmt.Println(meetingRoom.MeetingInfo.Attendees)
 	//allmeetings := api.GetMeetings()

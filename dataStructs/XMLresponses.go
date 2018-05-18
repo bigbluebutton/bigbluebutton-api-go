@@ -96,3 +96,16 @@ type recording struct {
   Published         string `xml:"published"`
   State             string `xml:"state"`
 }
+
+type CreateWebhookResponse struct {
+	Returncode           string `xml:"returncode"`
+	MessageKey           string `xml:"messageKey"`
+	Message              string `xml:"message"`
+	HookID							 string `xml:"hookID"`
+}
+type DestroyedWebhookResponse struct {
+	Returncode           string `xml:"returncode"`
+	MessageKey           string `xml:"messageKey"`
+	Message              string `xml:"message"`
+	Removed							 string `xml:"removed"`
+}
