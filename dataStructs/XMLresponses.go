@@ -87,7 +87,7 @@ type GetRecordingsResponse struct {
   Recordings            recordings `xml:"recordings"`
 }
 type recordings struct {
-	Recordings []recording `xml:"recording"`
+	Recording []recording `xml:"recording"`
 }
 type recording struct {
   RecordID          string `xml:"recordID"`
@@ -95,6 +95,27 @@ type recording struct {
   Name              string `xml:"name"`
   Published         string `xml:"published"`
   State             string `xml:"state"`
+	StartTime         string `xml:"startTime"`
+  EndTime           string `xml:"endTime"`
+	Participants			string `xml:"participants"`
+	MetaData					metadata `xml:"metadata"`
+	Playback					struct{
+		Format []struct{
+			Type          string `xml:"type"`
+		  Url         string `xml:"url"`
+		  Length              string `xml:"length"`
+			Images []string    `xml:"preview>images>image"`
+		}`xml:"format"`
+	}`xml:"playback"`
+}
+
+type metadata struct{
+	Title          string `xml:"title"`
+	Subject         string `xml:"subject"`
+	Description              string `xml:"description"`
+	Creator         string `xml:"creator"`
+	Contributor             string `xml:"contributor"`
+	Language         string `xml:"language"`
 }
 
 type CreateWebhookResponse struct {
@@ -108,4 +129,14 @@ type DestroyedWebhookResponse struct {
 	MessageKey           string `xml:"messageKey"`
 	Message              string `xml:"message"`
 	Removed							 string `xml:"removed"`
+}
+
+type PublishRecordingsResponse struct {
+	ReturnCode					string `xml:"returncode"`
+	Published						string `xml:"published"`
+}
+
+type DeleteRecordingsResponse struct {
+	ReturnCode					string `xml:"returncode"`
+	Deleted							string `xml:"deleted"`
 }

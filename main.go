@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/bigbluebutton-api-go/api"
 	"github.com/bigbluebutton-api-go/dataStructs"
 	"github.com/bigbluebutton-api-go/webhook"
-
 )
 
 func main() {
@@ -47,14 +47,14 @@ func main() {
 
 	var wh = dataStructs.WebHook{}
 	wh.CallBackURL = "http://postcatcher.in/catchers/5aff22a294c447040000000d"
-	wh.MeetingId =   meetingRoom.MeetingID_
+	wh.MeetingId = meetingRoom.MeetingID_
 
 	fmt.Println("Creating webhook")
-	fmt.Println(webhook.CreateHook(&wh))
+	//	fmt.Println(webhook.CreateHook(&wh))
 
-	fmt.Println(webhook.DestroyHook("1"))
-	fmt.Println(webhook.DestroyHook("2"))
-	fmt.Println(webhook.DestroyHook("3"))
+	for i := 0; i < 100; i++ {
+		fmt.Println(webhook.DestroyHook(strconv.Itoa(i)))
+	}
 
 	var temp = api.GetRecordings()
 	fmt.Println(temp)

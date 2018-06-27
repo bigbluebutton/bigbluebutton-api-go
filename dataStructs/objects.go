@@ -30,6 +30,7 @@ type Participants struct {
 type MeetingRoom struct {
 	Name_                   string
 	MeetingID_              string
+  InternalMeetingId       string
 	AttendeePW_             string
 	ModeratorPW_            string
 	Welcome                 string
@@ -44,8 +45,17 @@ type MeetingRoom struct {
 	AutoStartRecording      bool
 	AllowStartStopRecording bool
   Created                 bool
+  PostId                  string
+  CreatedAt               int64
+  EndedAt                 int64
+  AttendeeNames           []string
+  LoopCount               int      
 
-	CreateMeetingResponse CreateMeetingResponse
+  Meta_bn_recording_ready_url string //this needs to be properly url encoded
+  Meta_channelid          string
+  Meta_endcallbackurl     string
+
+  CreateMeetingResponse CreateMeetingResponse
 	MeetingInfo           GetMeetingInfoResponse
 
 }

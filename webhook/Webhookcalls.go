@@ -8,17 +8,28 @@ import (
 	"github.com/bigbluebutton-api-go/helpers"
 )
 
-var BASE_URL = "http://10.118.45.220/bigbluebutton/api/hooks/"
-var SALT = "836fcbf304c917f91175c3b34f8c3347"
+// var BASE_URL = "http://10.118.45.220/bigbluebutton/api/hooks/"
+// var SALT = "836fcbf304c917f91175c3b34f8c3347"
+
+var BASE_URL 	string
+var SALT 			string
+
+func SetWebhookAPI(url string, salt string){
+	BASE_URL =  url
+	SALT = salt
+}
+
+
 
 func CreateHook(wh *dataStructs.WebHook) string {
 	if wh.CallBackURL == "" {
 		return "Error, must indicate callback url"
 	}
 	callback := "callbackURL=" + url.QueryEscape(wh.CallBackURL)
-	meetingid := "&meetingID=" + url.QueryEscape(wh.MeetingId)
-
-	params := callback + meetingid
+	//meetingid := "&meetingID=" + url.QueryEscape(wh.MeetingId)
+	getRaw  := "&getRaw=true"
+	//params := callback + meetingid
+	params := callback +getRaw
 	checkSum := helpers.GetChecksum("hooks/create" + params + SALT)
 
 	response := helpers.HttpGet(BASE_URL + "create?" + params + "&checksum=" + checkSum)
